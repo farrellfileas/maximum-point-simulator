@@ -1,0 +1,38 @@
+header img {
+	height: 50px;
+	width: 50px;
+}
+
+.examples {
+	list-style: none;
+	padding-left: 0;
+}
+
+
+.card {
+	background-color: #00cc66;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	height: 100px;
+	width: 80px;
+	margin: 10px;
+	cursor: default;
+}
+
+.first-or-last {
+	background-color: #00ff00;
+	cursor: pointer;
+}
+
+.taken {
+	background-color: grey;
+}
+
+.blank-card {
+	background-color: white;
+}
+
+.card > h3 {
+	text-align: center;
+}
