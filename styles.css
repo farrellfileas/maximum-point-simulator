@@ -3,7 +3,7 @@ header img {
 	width: 50px;
 }
 
-.examples {
+.examples, #logs{
 	list-style: none;
 	padding-left: 0;
 }

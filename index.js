@@ -13,9 +13,8 @@
 	function init() {
 		qs('#submit').addEventListener('click', () => {populatePlayground(false);});
 		qs('#reset').addEventListener('click', () => {populatePlayground(true);});
-		qs("#test").addEventListener('click', () => {
-			$('.first-or-last').eq(1).trigger('click');
-		});
+		qs("#bruteforce").addEventListener('click', bruteforce);
+		qs("#activity").addEventListener('click', () => {qs('.logs').classList.toggle('d-none');});
 	}
 
 	function populatePlayground(reset) {
@@ -65,9 +64,13 @@
 		handIndex = 0;
 		points = 0;
 		qs('#current-point').textContent = points;
+		qs('#maximum-point').textContent = points;
 		left = 0;
 		right = cardPoints.length - 1;
 		qs('.playground-wrapper').classList.remove('d-none');
+		qs('#logs').innerHTML = "";
+		qs('.logs').classList.add('d-none');
+		qs("#actions-taken").textContent = '0';
 
 		$('html, body').animate({
 	        scrollTop: $(".playground-wrapper").offset().top
@@ -127,6 +130,12 @@
 		let id = parseInt(this.id);
 		let next;
 
+		let li = document.createElement("li");
+		li.textContent = "cardPoints[" + id + "] = " + cardPoints[id] + " added to the hand.";
+		qs("#logs").appendChild(li);
+		qs("#actions-taken").textContent = parseInt(qs("#actions-taken").textContent) + 1;
+
+
 		if (id === right) {
 			next = cardPointsDiv[id - 1];
 			right--;
@@ -148,6 +157,9 @@
 
 		points += parseInt(this.children[0].textContent);
 		qs('#current-point').textContent = points;
+		if (handIndex == cardPoints.length) {
+			qs('#maximum-point').textContent = Math.max(points, parseInt(qs('#maximum-point').textContent));
+		}
 	}
 
 	function removeFromHand() {
@@ -175,9 +187,17 @@
 			left--;
 		}
 
+		let li = document.createElement("li");
+		li.textContent = "cardPoints[" + id + "] = " + cardPoints[id] + " removed from the hand.";
+		qs("#logs").appendChild(li);
+		qs("#actions-taken").textContent = parseInt(qs("#actions-taken").textContent) + 1;
+
+
 		if (id != 0 || id != cardPoints.length - 1) {
-			prev.classList.remove('first-or-last');
-			prev.removeEventListener('click', addToHand);
+			if (right != left + 1) { 
+				prev.classList.remove('first-or-last');
+				prev.removeEventListener('click', addToHand);
+			}
 			current.classList.remove('taken');
 			current.classList.add('first-or-last');
 			current.addEventListener('click', addToHand);
@@ -194,6 +214,44 @@
 		qs('#current-point').textContent = points;
 	}
 
+	let speed = 500;
+	async function bruteforce() {
+		$('#reset').trigger('click');
+		let li = document.createElement("li");
+		li.textContent = "Bruteforce solution initiated...";
+		qs("#logs").appendChild(li);
+		li = document.createElement("li");
+		li.textContent = "Bruteforce solution complete, max score is: " + await bruteforce_helper(k, 0, cardPoints.length - 1) + ".";
+		qs("#logs").appendChild(li);
+	}
+
+	function bruteforce_helper(i, l, r) {
+		return new Promise(async (resolve, reject) => {
+			if (i === 0) {
+				setTimeout(() => {resolve(0)}, speed);
+				
+			} else {
+				setTimeout(async() => {
+					$('.cardPoints > .first-or-last').eq(0).trigger('click');
+					let L = cardPoints[l] + await bruteforce_helper(i - 1, l + 1, r);
+					await removeLast();
+					$('.cardPoints > .first-or-last').eq(1).trigger('click');
+					let R = cardPoints[r] + await bruteforce_helper(i - 1, l, r - 1);
+					await removeLast();
+					resolve(Math.max(L, R));
+				}, speed);
+			}
+		});
+	}
+
+	function removeLast() {
+		return new Promise((resolve, reject) => {
+			$('.hand > .first-or-last').eq(0).trigger('click');
+			setTimeout(resolve, speed);
+		});
+	}
+
+	
 	function fade(id) {
 		$('#'+id).fadeIn(700).removeClass('d-none').addClass('d-flex');
 	}
