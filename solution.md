@@ -1,5 +1,5 @@
 ## Note
-Although this text explanation is written well enough for you to understand. I encourage you to checkout the video explanation in [Youtube](www.youtube.com). Enjoy!
+Although this text explanation is written well enough for you to understand. I encourage you to checkout the video explanation in [Youtube](http://www.youtube.com). Enjoy!
 
 ## Approach #1: Brute Force [Time Limit Exceeded]
 ### Intuition and Algorithm
