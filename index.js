@@ -157,7 +157,7 @@
 
 		points += parseInt(this.children[0].textContent);
 		qs('#current-point').textContent = points;
-		if (handIndex == cardPoints.length) {
+		if (handIndex == k) {
 			qs('#maximum-point').textContent = Math.max(points, parseInt(qs('#maximum-point').textContent));
 		}
 	}
